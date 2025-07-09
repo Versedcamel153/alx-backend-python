@@ -20,10 +20,9 @@ def stream_users_in_batches(batch_size):
     cursor.close()
     connection.close()
 
-
 def batch_processing(batch_size):
     """Processes batches to filter users over age 25 and yields them one by one."""
     for batch in stream_users_in_batches(batch_size):
         for user in batch:
             if user["age"] > 25:
-                print(user)
+                yield user  # <-- 🔥 Correct: use yield instead of print
