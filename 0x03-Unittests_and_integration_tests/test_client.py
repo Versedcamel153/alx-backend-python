@@ -22,7 +22,9 @@ class TestGithubOrgClient(unittest.TestCase):
         mock_get_json.return_value = expected
         client = GithubOrgClient(org_name)
         self.assertEqual(client.org, expected)
-        mock_get_json.assert_called_once_with(f"https://api.github.com/orgs/{org_name}")
+        mock_get_json.assert_called_once_with(
+            f"https://api.github.com/orgs/{org_name}"
+        )
 
     @patch('client.GithubOrgClient.org', new_callable=PropertyMock)
     def test_public_repos_url(self, mock_org):
@@ -40,7 +42,10 @@ class TestGithubOrgClient(unittest.TestCase):
         ]
         mock_get_json.return_value = payload
 
-        with patch('client.GithubOrgClient._public_repos_url', new_callable=PropertyMock) as mock_url:
+        with patch(
+            'client.GithubOrgClient._public_repos_url',
+            new_callable=PropertyMock
+        ) as mock_url:
             mock_url.return_value = "http://fake.url"
             client = GithubOrgClient("test")
             self.assertEqual(client.public_repos(), ["repo1", "repo2"])
@@ -50,11 +55,14 @@ class TestGithubOrgClient(unittest.TestCase):
     @parameterized.expand([
         ({"license": {"key": "my_license"}}, "my_license", True),
         ({"license": {"key": "other_license"}}, "my_license", False),
-        ({}, "my_license", False),  # edge case: no license key at all
+        ({}, "my_license", False),
     ])
     def test_has_license(self, repo, license_key, expected):
         """Test has_license static method"""
-        self.assertEqual(GithubOrgClient.has_license(repo, license_key), expected)
+        self.assertEqual(
+            GithubOrgClient.has_license(repo, license_key),
+            expected
+        )
 
 
 @parameterized_class(
@@ -88,9 +96,15 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
     def test_public_repos(self):
         """Test public_repos returns all repo names"""
         client = GithubOrgClient("google")
-        self.assertEqual(client.public_repos(), self.expected_repos)
+        self.assertEqual(
+            client.public_repos(),
+            self.expected_repos
+        )
 
     def test_public_repos_with_license(self):
         """Test public_repos filters repos by license"""
         client = GithubOrgClient("google")
-        self.assertEqual(client.public_repos(license="apache-2.0"), self.apache2_repos)
+        self.assertEqual(
+            client.public_repos(license="apache-2.0"),
+            self.apache2_repos
+        )
