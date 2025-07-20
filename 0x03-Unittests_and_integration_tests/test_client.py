@@ -31,7 +31,10 @@ class TestGithubOrgClient(unittest.TestCase):
         """Test _public_repos_url property"""
         mock_org.return_value = {"repos_url": "http://fake.url"}
         client = GithubOrgClient("test")
-        self.assertEqual(client._public_repos_url, "http://fake.url")
+        self.assertEqual(
+            client._public_repos_url,
+            "http://fake.url"
+        )
 
     @patch('client.get_json')
     def test_public_repos(self, mock_get_json):
@@ -48,7 +51,10 @@ class TestGithubOrgClient(unittest.TestCase):
         ) as mock_url:
             mock_url.return_value = "http://fake.url"
             client = GithubOrgClient("test")
-            self.assertEqual(client.public_repos(), ["repo1", "repo2"])
+            self.assertEqual(
+                client.public_repos(),
+                ["repo1", "repo2"]
+            )
             mock_get_json.assert_called_once_with("http://fake.url")
             mock_url.assert_called_once()
 

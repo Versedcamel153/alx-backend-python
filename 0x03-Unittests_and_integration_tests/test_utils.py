@@ -9,7 +9,8 @@ from utils import access_nested_map, get_json, memoize
 
 
 class TestAccessNestedMap(unittest.TestCase):
-    """Test cases for the access_nested_map function"""
+    """Test access_nested_map returns correct value
+        for valid nested keys and paths."""
 
     @parameterized.expand([
         ({"a": 1}, ("a",), 1),
@@ -65,7 +66,9 @@ class TestMemoize(unittest.TestCase):
             def a_property(self):
                 return self.a_method()
 
-        with patch.object(TestClass, 'a_method', return_value=42) as mock_method:
+        with patch.object(
+            TestClass, 'a_method', return_value=42
+            ) as mock_method:
             obj = TestClass()
             self.assertEqual(obj.a_property, 42)
             self.assertEqual(obj.a_property, 42)
