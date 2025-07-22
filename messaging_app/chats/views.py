@@ -1,6 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from .models import Conversation, Message, User
+from django_filters import rest_framework as filters
 from .serializers import (
     ConversationSerializer,
     MessageSerializer,
@@ -10,7 +11,8 @@ from .serializers import (
 class ConversationViewSet(viewsets.ModelViewSet):
     queryset = Conversation.objects.all()
     serializer_class = ConversationSerializer
-
+    filterset_fields = ['participants'] 
+    
     def create(self, request, *args, **kwargs):
         # Expecting: list of participant user_ids in POST data
         user_ids = request.data.get("participants", [])
@@ -30,6 +32,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
+    filterset_fields = ['conversation']
 
     def create(self, request, *args, **kwargs):
         # Expecting: sender_id, conversation_id, message_body
