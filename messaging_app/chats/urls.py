@@ -2,7 +2,7 @@
 from django.urls import path, include
 from rest_framework import routers
 from rest_framework_nested.routers import NestedDefaultRouter
-from messaging_app.chats.views import ConversationViewSet, MessageViewSet
+from .views import ConversationViewSet, MessageViewSet
 
 # Register base routes with DefaultRouter
 router = routers.DefaultRouter()
