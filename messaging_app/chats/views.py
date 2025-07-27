@@ -1,6 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import PermissionDenied
 from .models import Conversation, Message, User
 from .filter import MessageFilter
 from django_filters import rest_framework as filters
@@ -71,4 +72,23 @@ class MessageViewSet(viewsets.ModelViewSet):
             message_body=message_body
         )
         serializer = self.get_serializer(message)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)\
+        
+    def get_queryset(self):
+        # ✅ Explicit filter and 403 check
+        user = self.request.user
+        conversation_id = self.request.query_params.get('conversation_id')
+
+        if conversation_id:
+            try:
+                conversation = Conversation.objects.get(conversation_id=conversation_id)
+            except Conversation.DoesNotExist:
+                raise PermissionDenied(detail="Conversation does not exist.")
+
+            if user not in conversation.participants.all():
+                from rest_framework.status import HTTP_403_FORBIDDEN
+                return Response({"detail": "Not allowed."}, status=HTTP_403_FORBIDDEN)
+
+            return Message.objects.filter(conversation=conversation)
+
+        return Message.objects.filter(conversation__participants=user)
