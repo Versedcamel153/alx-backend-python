@@ -14,6 +14,7 @@ from .serializers import (
 class UserViewSet(viewsets.ReadOnlyModelViewSet):  # Only GET methods
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
 
 
 
@@ -42,6 +43,7 @@ class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
     filterset_fields = ['conversation']
+    permission_classes = [IsParticipantOfConversation, IsAuthenticated]
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = MessageFilter
 
