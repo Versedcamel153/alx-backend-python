@@ -1,11 +1,20 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from .models import Conversation, Message, User
+from .filter import MessageFilter
 from django_filters import rest_framework as filters
+from .permissions import IsParticipantOfConversation
 from .serializers import (
     ConversationSerializer,
-    MessageSerializer,
+    MessageSerializer, UserSerializer
 )
+
+
+class UserViewSet(viewsets.ReadOnlyModelViewSet):  # Only GET methods
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
 
 
 class ConversationViewSet(viewsets.ModelViewSet):
@@ -33,6 +42,8 @@ class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
     filterset_fields = ['conversation']
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = MessageFilter
 
     def create(self, request, *args, **kwargs):
         # Expecting: sender_id, conversation_id, message_body

@@ -2,12 +2,13 @@
 from django.urls import path, include
 from rest_framework import routers
 from rest_framework_nested.routers import NestedDefaultRouter
-from .views import ConversationViewSet, MessageViewSet
+from .views import ConversationViewSet, MessageViewSet, UserViewSet
 
 # Register base routes with DefaultRouter
 router = routers.DefaultRouter()
 router.register(r'conversations', ConversationViewSet, basename='conversations')
 router.register(r'messages', MessageViewSet, basename='messages')  # Optional: allow top-level access
+router.register(r'users', UserViewSet, basename='user')
 
 # Register nested routes
 nested_router = NestedDefaultRouter(router, r'conversations', lookup='conversation')

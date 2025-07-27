@@ -9,6 +9,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'user_id',
+            'username',
             'first_name',
             'last_name',
             'email',
@@ -52,6 +53,6 @@ class ConversationSerializer(serializers.ModelSerializer):
         ]
 
     def get_messages(self, obj):
-        from messaging_app.chats.models import Message
+        from .models import Message
         messages = Message.objects.filter(conversation=obj).order_by('sent_at')
         return MessageSerializer(messages, many=True).data
